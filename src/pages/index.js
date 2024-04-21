@@ -1,12 +1,8 @@
 import Image from "next/image";
-import { Inter } from "next/font/google";
 import { useState } from "react";
-const inter = Inter({ subsets: ["latin"] });
 import { useMutation } from "@apollo/client";
 import { MakeOrder } from '../gql/Mutation'
 import { Alert } from "@mui/material";
-
-
 export default function Home() {
   const [alert,setAlert] = useState(false)
   const [makeOrder,{ loading, error, data }] = useMutation(MakeOrder,{
@@ -23,32 +19,20 @@ export default function Home() {
   const [plateNumber, setPlateNumber] = useState('');
   const [plateLetters, setPlateLetters] = useState('');
   const [carType, setCarType] = useState('');
-  const [entryDate, setEntryDate] = useState('');
-  const [leavingDate, setLeavingDate] = useState('');
-
-  let entryDateOpject=new Date(entryDate)
-  let leavingDateOpject=new Date(leavingDate)
-  let checkDate = false
-  let checkTime = false
-  entryDateOpject > currentDate && entryDateOpject <= leavingDateOpject ? checkDate=true : ''
-  const [entryTime, setEntryTime] = useState('');
-  const [leaveingTime, setLeaveingTime] = useState('');
-  leaveingTime > entryTime ? checkTime = true : ''
+  const [entryTimeDate, setEntryTimeDate] = useState('');
+  const [leaveingTimeDate, setLeaveingTimeDate] = useState('');
   const [license, setLicense] = useState('');
   const [reason, setReason] = useState('');
-  const numbers = `۰۱۲۳۴۵۶۷۸۹`;
-  // let convertedPlateNumber = "";
-  // const str = plateNumber.toString();
-  // for (let c of str) {
-  //   convertedPlateNumber += numbers.charAt(c);
-  // }
+  let entryTDCheck = new Date(entryTimeDate)
+  let leaveingTDCheck = new Date(leaveingTimeDate)
+  let checkDate = null
+  entryTDCheck > currentDate && leaveingTDCheck > entryTDCheck ? checkDate =true : checkDate =false
   const handleLanguage = () => {
     setLanguage(language === 'En' ? 'ع' : 'En');
   };
-  let correct = null
   const handleSubmit = (e) => {
-    e.preventDefault();  
-    entryTime && leaveingTime &&
+    e.preventDefault();
+    checkDate && 
       makeOrder({
         variables: {
           carNumber: parseInt(plateNumber),
@@ -56,8 +40,8 @@ export default function Home() {
           ownerName: name,
           licenseImage: license,
           carType: carType,
-          arriveTime: new Date(entryTime).toISOString(),
-          leaveTime: new Date(leaveingTime).toISOString(),
+          arriveTime: new Date(entryTimeDate).toISOString(),
+          leaveTime: new Date(leaveingTimeDate).toISOString(),
           reason: reason
         }
       })
@@ -100,6 +84,13 @@ export default function Home() {
             onChange={(e)=>setName(e.target.value)}
           />
           <input
+            type="email"
+            placeholder={` ${language === 'ع' ? 'الأيميل' : 'Email'}`}
+            className={`input-field mb-4 p-2 rounded-lg outline-none text-white bg-[#041920] ${language === 'ع' ? 'text-right' : 'text-left'}`}
+            required
+            onChange={(e)=>setEmail(e.target.value)}
+          />
+          <input
             type="number"
             placeholder={` ${language === 'ع' ? 'رقم اللوحة' : 'Plate Numbers'}`}
             className={`input-field mb-4 p-2 rounded-lg outline-none text-white bg-[#041920] ${language === 'ع' ? 'text-right' : 'text-left'}`}
@@ -121,30 +112,6 @@ export default function Home() {
             required
             onChange={(e)=>setCarType(e.target.value)}
           />
-          {/* <label className={`font-mono text-sm text-[#003C43] ${language === 'ع' ? 'text-right' : 'text-left'}`}>
-            {` ${language === 'ع' ? 'تاريخ الدخول' : 'Entry Date'}`}
-          </label>
-          <input
-            type="date"
-            placeholder={` ${language === 'ع' ? 'تاريخ الدخول' : 'Entry Date'}`}
-            className={`input-field mb-4 p-2 rounded-lg outline-none text-white bg-[#041920] ${language === 'ع' ? 'text-right' : 'text-left'}`}
-            required
-            style={{ 
-              'colorScheme': 'dark',
-            }}
-            onChange={(e)=>setEntryDate(e.target.value)}
-          />
-          <label className={`font-mono text-sm text-[#003C43] ${language === 'ع' ? 'text-right' : 'text-left'}`}>
-            {` ${language === 'ع' ? 'تاريخ الخروج' : 'Leaving Date'}`}
-          </label>
-          <input
-            type="date"
-            placeholder={` ${language === 'ع' ? 'تاريخ الخروج' : 'Leaving Date'}`}
-            className={`input-field mb-4 p-2 rounded-lg outline-none text-white bg-[#041920] ${language === 'ع' ? 'text-right' : 'text-left'}`}
-            required
-            style={{'colorScheme': 'dark'}}
-            onChange={(e)=>setLeavingDate(e.target.value)}
-          /> */}
           <label className={`font-mono text-sm text-[#003C43] ${language === 'ع' ? 'text-right' : 'text-left'}`}>
             {` ${language === 'ع' ? 'وقت و تاريخ الدخول' : 'Entry date & Time'}`}
           </label>
@@ -154,7 +121,7 @@ export default function Home() {
             className={`input-field mb-4 p-2 rounded-lg outline-none text-white bg-[#041920] ${language === 'ع' ? 'text-right' : 'text-left'}`}
             required
             style={{ 'colorScheme': 'dark'}}
-            onChange={(e)=>setEntryTime(e.target.value)}
+            onChange={(e)=>setEntryTimeDate(e.target.value)}
           />
           <label className={`font-mono text-sm text-[#003C43] ${language === 'ع' ? 'text-right' : 'text-left'}`}>
             {` ${language === 'ع' ? 'وقت و تاريخ المغادرة' : 'Leaving Time'}`}
@@ -165,7 +132,7 @@ export default function Home() {
             className={`input-field mb-4 p-2 rounded-lg outline-none text-white bg-[#041920] ${language === 'ع' ? 'text-right' : 'text-left'}`}
             required
             style={{'colorScheme': 'dark'}}
-            onChange={(e)=>setLeaveingTime(e.target.value)}
+            onChange={(e)=>setLeaveingTimeDate(e.target.value)}
           />
           <label className={`font-mono text-sm text-[#003C43] ${language === 'ع' ? 'text-right' : 'text-left'}`}>
             {` ${language === 'ع' ? 'رخصة السائق' : "Driver's license"}`}
@@ -185,11 +152,9 @@ export default function Home() {
             onChange={(e)=>setReason(e.target.value)}
           />
           {
-            checkTime && checkDate === true ? 
-            ''
-            // <div className="text-white p-2 m-1 bg-green-400">submit date</div>
-            :
-            <div className="text-white p-2 m-1 bg-red-400">Invalid entered date or time</div>
+            checkDate === false 
+            ? <div className="text-white p-2 m-1 bg-red-400">Invalid entered date or time</div>
+            : <div className="text-white p-2 m-1 bg-green-400">Valid date</div> 
           }
           <button type="submit" className="btn bg-[#003C43] text-white p-3 rounded-xl hover:bg-[#003c437f]">
             {` ${language === 'ع' ? 'إرسال' : "Submit"}`}
