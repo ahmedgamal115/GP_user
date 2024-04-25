@@ -23,6 +23,7 @@ export default function Home() {
   const [leaveingTimeDate, setLeaveingTimeDate] = useState('');
   const [license, setLicense] = useState('');
   const [reason, setReason] = useState('');
+  const [email, setEmail] = useState('');
   let entryTDCheck = new Date(entryTimeDate)
   let leaveingTDCheck = new Date(leaveingTimeDate)
   let checkDate = null
@@ -41,6 +42,7 @@ export default function Home() {
           licenseImage: license,
           carType: carType,
           arriveTime: new Date(entryTimeDate).toISOString(),
+          email:email,
           leaveTime: new Date(leaveingTimeDate).toISOString(),
           reason: reason
         }

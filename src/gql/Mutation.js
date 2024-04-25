@@ -8,6 +8,7 @@ const MakeOrder = gql`
         $licenseImage: Upload!, 
         $carType: String!, 
         $arriveTime: String!, 
+        $email: String!,
         $leaveTime: String!, 
         $reason: String!) {
         addOrder(carNumber: $carNumber, 
@@ -16,6 +17,7 @@ const MakeOrder = gql`
             licenseImage: $licenseImage, 
             carType: $carType, 
             arriveTime: $arriveTime, 
+            email: $email,
             leaveTime: $leaveTime, 
             reason: $reason) {
         arriveTime
